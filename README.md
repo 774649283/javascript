@@ -275,7 +275,7 @@ Other Style Guides
   <a name="objects--quoted-props"></a>
   - [3.6](#objects--quoted-props) 只对那些无效的标示使用引号 `''`. eslint: [`quote-props`](http://eslint.org/docs/rules/quote-props.html)
 
-    > Why? 通常我们认为这种方式主观上易读。他优化了代码高亮，并且页更容易被许多JS引擎压缩。
+    > Why? 通常我们认为这种方式主观上易读。他优化了代码高亮，并且也更容易被许多JS引擎压缩。
 
     ```javascript
     // bad
@@ -520,7 +520,7 @@ Other Style Guides
   <a name="destructuring--object"></a>
   - [5.1](#destructuring--object) 用对象的解构赋值来获取和使用对象某个或多个属性值。 eslint: [`prefer-destructuring`](https://eslint.org/docs/rules/prefer-destructuring)
 
-    > Why? 解构保存了这些属性的临时值/引用
+    > Why? 解构使您不必为这些属性创建临时引用
 
     ```javascript
     // bad
@@ -560,7 +560,7 @@ Other Style Guides
 
   <a name="5.3"></a>
   <a name="destructuring--object-over-array"></a>
-  - [5.3](#destructuring--object-over-array) 多个返回值用对象的解构，而不是数据解构。
+  - [5.3](#destructuring--object-over-array) 多个返回值用对象的解构，而不是数组解构。
 
     > Why? 你可以在后期添加新的属性或者变换变量的顺序而不会打破原有的调用
 
@@ -950,7 +950,7 @@ Other Style Guides
 
   <a name="7.15"></a>
   <a name="functions--signature-invocation-indentation"></a>
-  - [7.15](#functions--signature-invocation-indentation) 调用或者书写一个包含多个参数的函数应该像这个指南里的其他多行代码写法一样： 每行值包含一个参数，每行逗号结尾。
+  - [7.15](#functions--signature-invocation-indentation) 调用或者书写一个包含多个参数的函数应该像这个指南里的其他多行代码写法一样： 每行只包含一个参数，每行逗号结尾。
 
     ```javascript
     // bad
@@ -1200,13 +1200,13 @@ Other Style Guides
     }
     inherits(PeekableQueue, Queue);
     PeekableQueue.prototype.peek = function () {
-      return this._queue[0];
+      return this.queue[0];
     }
 
     // good
     class PeekableQueue extends Queue {
       peek() {
-        return this._queue[0];
+        return this.queue[0];
       }
     }
     ```
@@ -1322,6 +1322,40 @@ Other Style Guides
     // good
     class Foo {
       bar() { return 2; }
+    }
+    ```
+
+ <a name="classes--methods-use-this"></a>
+  - [9.7](#classes--methods-use-this) 除非外部库或框架需要使用特定的非静态方法，否则类方法应该使用`this`或被做成静态方法。
+  作为一个实例方法应该表明它根据接收者的属性有不同的行为。eslint: [`class-methods-use-this`](https://eslint.org/docs/rules/class-methods-use-this)
+
+    ```javascript
+    // bad
+    class Foo {
+      bar() {
+        console.log('bar');
+      }
+    }
+
+    // good - this 被使用了
+    class Foo {
+      bar() {
+        console.log(this.bar);
+      }
+    }
+
+    // good - constructor 不一定要使用this
+    class Foo {
+      constructor() {
+        // ...
+      }
+    }
+
+    // good - 静态方法不需要使用 this
+    class Foo {
+      static bar() {
+        console.log('bar');
+      }
     }
     ```
 
@@ -1803,14 +1837,14 @@ Other Style Guides
     ```javascript
       // bad
 
-      let array = [1, 2, 3];
+      const array = [1, 2, 3];
       let num = 1;
       num++;
       --num;
 
       let sum = 0;
       let truthyCount = 0;
-      for(let i = 0; i < array.length; i++){
+      for (let i = 0; i < array.length; i++) {
         let value = array[i];
         sum += value;
         if (value) {
@@ -1820,7 +1854,7 @@ Other Style Guides
 
       // good
 
-      let array = [1, 2, 3];
+      const array = [1, 2, 3];
       let num = 1;
       num += 1;
       num -= 1;
@@ -2381,7 +2415,7 @@ Other Style Guides
     }
     ```
 
-**[⬆ back to top](#table-of-contents)**
+**[⬆ back to top](#目录)**
 
 ## Comments
 
@@ -3474,11 +3508,16 @@ Other Style Guides
       // ...
     ];
 
+    // also good
+    const httpRequests = [
+      // ...
+    ];
+
     // best
     import TextMessageContainer from './containers/TextMessageContainer';
 
     // best
-    const Requests = [
+    const requests = [
       // ...
     ];
     ```
@@ -3506,15 +3545,15 @@ Other Style Guides
 
     // ---
 
-    // allowed but does not supply semantic value
+    // 允许但不够语义化
     export const apiKey = 'SOMEKEY';
 
-    // better in most cases
+    // 在大多数情况下更好
     export const API_KEY = 'SOMEKEY';
 
     // ---
 
-    // bad - unnecessarily uppercases key while adding no semantic value
+    // bad - 不必要的大写键，没有增加任何语义
     export const MAPPING = {
       KEY: 'value'
     };
@@ -3612,10 +3651,10 @@ Other Style Guides
     // bad
     $(this).trigger('listingUpdated', listing.id);
 
-    ...
+    // ...
 
-    $(this).on('listingUpdated', (e, listingId) => {
-      // do something with listingId
+    $(this).on('listingUpdated', (e, listingID) => {
+      // do something with listingID
     });
     ```
 
@@ -3623,16 +3662,16 @@ Other Style Guides
 
     ```javascript
     // good
-    $(this).trigger('listingUpdated', { listingId: listing.id });
+    $(this).trigger('listingUpdated', { listingID: listing.id });
 
-    ...
+    // ...
 
     $(this).on('listingUpdated', (e, data) => {
-      // do something with data.listingId
+      // do something with data.listingID
     });
     ```
 
-  **[⬆ back to top](#目录)**
+**[⬆ back to top](#目录)**
 
 
 ## jQuery
@@ -4006,7 +4045,7 @@ Other Style Guides
   - **Zillow**: [zillow/javascript](https://github.com/zillow/javascript)
   - **ZocDoc**: [ZocDoc/javascript](https://github.com/ZocDoc/javascript)
 
-**[⬆ back to top](#table-of-contents)**
+**[⬆ back to top](#目录)**
 
 ## Translation
 
@@ -4066,7 +4105,7 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-**[⬆ back to top](#table-of-contents)**
+**[⬆ back to top](#目录)**
 
 ## Amendments
 
